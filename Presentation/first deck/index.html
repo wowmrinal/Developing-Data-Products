@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Implementing the Mean-Variance Algorithm in R</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Implementing the Mean-Variance Algorithm in R">
+  <meta name="author" content="Mrinal Mishra">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/hemisu-light.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Implementing the Mean-Variance Algorithm in R</h1>
+    <h2>Automated Portfolio Optimizer</h2>
+    <p>Mrinal Mishra<br/>Indian School of Business</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Creating the efficient frontier</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Select a list of assets (ETFs) traded on the National Stock Exchange (India)</li>
+<li>Enter the individual&#39;s risk aversion to obtain his optimal optimal given the risk return tradeoff</li>
+<li>Invoke the <code>quadprog</code> package to carry out quadratic optimization</li>
+<li>The mathematical form optimized is:</li>
+</ul>
+
+<p>\[ \min -d^Tb + {\lambda \over2} b^TDb \] 
+\[ where A^Tb>=b_0 \]</p>
+
+<ul>
+<li>Here \(d\) and \(D\) denote the expected return and variance-covariance matrix respectively. \(b\) is the vector of optimal weights obtained.</li>
+</ul>
+
+<script type="text/x-mathjax-config">
+   MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 125, availableFonts: [] }  });
+</script>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Data Sources and User Input</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Daily returns data is pulled for the following ETFs from Yahoo Finance:</li>
+</ul>
+
+<pre><code>## [1] &quot;GOLDBEES.NS&quot;   &quot;HNGSNGBEES.BO&quot; &quot;KOTAKNIFTY.BO&quot; &quot;LICNMFET.NS&quot;  
+## [5] &quot;LIQUIDBEES.BO&quot; &quot;M100.BO&quot;       &quot;N100.NS&quot;       &quot;RELCONS.NS&quot;   
+## [9] &quot;RELDIVOPP.NS&quot;
+</code></pre>
+
+<ul>
+<li><p>The ETFs are:</p>
+
+<table><thead>
+<tr>
+<th>High Risk</th>
+<th>Low Risk</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Goldman Sachs Gold ETF</td>
+<td>R-Shares Dividend ETF</td>
+</tr>
+<tr>
+<td>Kotak Nifty ETF</td>
+<td>LIC Nomura G-Sec Long Term ETF</td>
+</tr>
+<tr>
+<td>R-Shares Consumption ETF</td>
+<td>Motilal Midcap ETF</td>
+</tr>
+<tr>
+<td>Motilal NASDAQ 100 ETF</td>
+<td>Goldman Sachs Liquid ETF</td>
+</tr>
+<tr>
+<td>Goldman Sachs Hang Seng ETF</td>
+<td></td>
+</tr>
+</tbody></table></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Tailoring output for risk preferences</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>The user risk premium coefficient is captured using the <code>Risk.Premium</code> variable </li>
+<li>We subsequently match the value of the risk premium \(\lambda\) with the corresponding point on the efficient frontier</li>
+<li>The following function in server.R plots the efficient frontier </li>
+</ul>
+
+<pre><code class="r">eff.frontier(returns = returns$R, short = &quot;no&quot;, max.allocation = 0.3, risk.premium.up = 1, 
+    risk.increment = 0.001)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Efficient Frontier</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Expected returns and standard deviation for a user with <code>Risk.Premium=0.25</code> is depicted in the graph below</li>
+</ul>
+
+<h2><img src="C:/Users/Rashh/Documents/Presentation/Efficient%20Frontier.png" alt="alt text"></h2>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Creating the efficient frontier'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Data Sources and User Input'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Tailoring output for risk preferences'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Efficient Frontier'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
